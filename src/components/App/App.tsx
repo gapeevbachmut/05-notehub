@@ -29,7 +29,7 @@ export default function App() {
     queryKey: ['notes', searchQuery],
     queryFn: () => fetchNotes(searchQuery),
     placeholderData: keepPreviousData, // прибирає блимання екрану - дані відмалюються після запиту
-    // enabled: searchQuery !== '',
+    // enabled: false, // не рендерити
   });
 
   // видалення  нотатки

@@ -47,7 +47,7 @@ export async function deleteNote(id: string): Promise<Note> {
   return responce.data;
 }
 
-//  (, createNote, )
+//  ( createNote, )
 
 // Створення нової нотатки
 
