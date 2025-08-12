@@ -16,7 +16,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState(''); // значення інпута
   const [currentPage, setCurrentPage] = useState(1); // pagination
 
-  const perPage = 10;
+  const perPage = 12;
 
   const updateSearchQuery = useDebouncedCallback(
     (value: string) => setSearchQuery(value),
@@ -81,6 +81,7 @@ export default function App() {
 
           {/* Пагінація */}
           {/* Кнопка створення нотатки */}
+          <button className={css.button}>Create note +</button>
         </header>
         {isLoading && <p>Завантаження нотаток...</p>}
         {isError && <p>Помилка: {error.message}</p>}
