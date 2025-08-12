@@ -16,15 +16,12 @@ export default function SearchBox({ onChange }: SearchBoxProps) {
   console.log(inputValue);
 
   return (
-    <>
-      <input
-        className={css.input}
-        type="text"
-        placeholder="Search notes"
-        value={inputValue}
-        onChange={handleChange}
-      />
-      <p>{inputValue}</p>
-    </>
+    <input
+      className={css.input}
+      type="text"
+      placeholder="Search notes"
+      value={inputValue}
+      onChange={handleChange}
+    />
   );
 }

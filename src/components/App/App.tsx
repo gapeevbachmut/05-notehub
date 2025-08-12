@@ -1,36 +1,48 @@
-import { useState } from 'react';
 import {
   useQuery,
   keepPreviousData,
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
+import { fetchNotes, deleteNote } from '../../services/noteService';
 import css from './App.module.css';
 import NoteList from '../NoteList/NoteList';
-import { fetchNotes, deleteNote } from '../../services/noteService';
 import SearchBox from '../SearchBox/SearchBox';
+import Pagination from '../Pagination/Pagination';
 
 export default function App() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(''); // значення інпута
+  const [currentPage, setCurrentPage] = useState(1); // pagination
+
+  const perPage = 10;
 
   const updateSearchQuery = useDebouncedCallback(
     (value: string) => setSearchQuery(value),
     500
   );
 
-  // Завантаження нотаток при першому рендері
+  // Завантаження при першому рендері
   const {
-    data: notes = [],
+    // data: notes = [],
+    data,
+    isSuccess,
     isLoading,
     error,
     isError,
   } = useQuery({
-    queryKey: ['notes', searchQuery],
-    queryFn: () => fetchNotes(searchQuery),
-    placeholderData: keepPreviousData, // прибирає блимання екрану - дані відмалюються після запиту
-    // enabled: false, // не рендерити
+    queryKey: ['notes', searchQuery, currentPage],
+    queryFn: () => fetchNotes(searchQuery, currentPage, perPage),
+    placeholderData: keepPreviousData, //  дані відмалюються після запиту
+    // enabled: false, // не рендерити одразу
   });
+
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    setCurrentPage(selected + 1);
+  };
+
+  // const totalPages = data?.totalPages ?? 0;
 
   // видалення  нотатки
 
@@ -50,20 +62,31 @@ export default function App() {
     }
   };
   ///////////////////////////////
+
   return (
     <>
-      <h1>Hello!</h1>
+      <h1>Мої нотатки!</h1>
       <div className={css.app}>
         <header className={css.toolbar}>
           <SearchBox onChange={updateSearchQuery} />
+
+          {isSuccess && data && data.notes.length > 0 ? (
+            <Pagination
+              pageCount={data.totalPages}
+              onPageChange={handlePageChange}
+            />
+          ) : (
+            !isLoading && <p>Немає нотаток. Створи першу нотатку!</p>
+          )}
+
           {/* Пагінація */}
           {/* Кнопка створення нотатки */}
         </header>
         {isLoading && <p>Завантаження нотаток...</p>}
         {isError && <p>Помилка: {error.message}</p>}
 
-        {notes && notes.length > 0 ? (
-          <NoteList notes={notes || []} onDelete={handleDelete} />
+        {isSuccess && data && data.notes.length > 0 ? (
+          <NoteList notes={data.notes || []} onDelete={handleDelete} />
         ) : (
           // якщо не в процесі завантаження і немає нотаток — показуємо повідомлення
           !isLoading && <p>Немає нотаток. Створи першу нотатку!</p>

@@ -12,13 +12,15 @@ export interface FetchNotesResponse {
 const myKey = import.meta.env.VITE_NOTEHUB_TOKEN;
 
 export const fetchNotes = async (
-  search: string
-  //page: number
-): Promise<Note[]> => {
+  search: string,
+  page: number,
+  perPage: number
+): Promise<FetchNotesResponse> => {
   const config = {
     params: {
       search, // пошук - ?
-      //page, // сторінка
+      page, // сторінка
+      perPage, // кількість на сторінці
     },
     headers: {
       accept: 'application/json',
@@ -31,7 +33,7 @@ export const fetchNotes = async (
   );
   console.log(responce.data.notes);
 
-  return responce.data.notes;
+  return responce.data;
 };
 
 export async function deleteNote(id: string): Promise<Note> {

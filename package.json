@@ -16,6 +16,7 @@
     "modern-normalize": "^3.0.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-paginate": "^8.3.0",
     "use-debounce": "^10.0.5"
   },
   "devDependencies": {
