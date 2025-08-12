@@ -13,8 +13,8 @@ const myKey = import.meta.env.VITE_NOTEHUB_TOKEN;
 
 export const fetchNotes = async (
   search: string,
-  page: 1,
-  perPage: 12
+  page: number,
+  perPage: number
 ): Promise<FetchNotesResponse> => {
   const config = {
     params: {
