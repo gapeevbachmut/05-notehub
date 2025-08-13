@@ -83,8 +83,6 @@ export default function App() {
             )
           )}
 
-          {/* Пагінація */}
-          {/* Кнопка створення нотатки */}
           <button className={css.button} onClick={openModal}>
             Create note +
           </button>

@@ -1,16 +1,3 @@
-// При натисканні на цю кнопку має відкриватись модальне вікно Modal з формою NoteForm. Компонент Modal має створювати DOM-елемент наступної структури:
-
-// <div
-//   className={css.backdrop}
-//   role="dialog"
-//   aria-modal="true"
-// >
-//   <div className={css.modal}>
-//     {/* */}
-//   </div>
-// </div>
-
-// Модальне вікно має створюватись через createPortal, щоб рендерити модалку поза межами основного дерева компонентів, та закриватися при кліку на бекдроп і натисканням на клавішу Escape.
 import css from './Modal.module.css';
 import { createPortal } from 'react-dom';
 import React, { useEffect } from 'react';
@@ -52,13 +39,6 @@ export default function Modal({ onClose }: ModalProps) {
       onClick={handleBackdropClick}
     >
       <div className={css.modal}>
-        {/* <button
-          className={css.closeButton}
-          
-          aria-label="Close modal"
-        >
-          &times;
-        </button> */}
         <NoteForm onClose={onClose} />
       </div>
     </div>,
