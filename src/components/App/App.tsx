@@ -95,11 +95,7 @@ export default function App() {
         {isSuccess && data && data.notes.length > 0 && (
           <NoteList notes={data.notes || []} onDelete={handleDelete} />
         )}
-        {isModalOpen && (
-          <Modal onClose={closeModal}>
-            <p>Component</p>
-          </Modal>
-        )}
+        {isModalOpen && <Modal onClose={closeModal} />}
       </div>
     </>
   );
