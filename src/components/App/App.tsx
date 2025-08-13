@@ -18,10 +18,9 @@ export default function App() {
 
   const perPage = 12;
 
-  const updateSearchQuery = useDebouncedCallback(
-    (value: string) => setSearchQuery(value),
-    500
-  );
+  const updateSearchQuery = useDebouncedCallback((value: string) => {
+    setSearchQuery(value);
+  }, 500);
 
   // Завантаження при першому рендері
   const {
@@ -76,7 +75,9 @@ export default function App() {
               onPageChange={handlePageChange}
             />
           ) : (
-            !isLoading && <p>Немає нотаток. Створи першу нотатку!</p>
+            !isLoading && (
+              <p>Немає нотаток за пошуковим запитом. Створимо першу нотатку?</p>
+            )
           )}
 
           {/* Пагінація */}
@@ -86,11 +87,8 @@ export default function App() {
         {isLoading && <p>Завантаження нотаток...</p>}
         {isError && <p>Помилка: {error.message}</p>}
 
-        {isSuccess && data && data.notes.length > 0 ? (
+        {isSuccess && data && data.notes.length > 0 && (
           <NoteList notes={data.notes || []} onDelete={handleDelete} />
-        ) : (
-          // якщо не в процесі завантаження і немає нотаток — показуємо повідомлення
-          !isLoading && <p>Немає нотаток. Створи першу нотатку!</p>
         )}
       </div>
     </>

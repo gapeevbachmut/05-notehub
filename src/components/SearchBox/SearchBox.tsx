@@ -8,9 +8,11 @@ interface SearchBoxProps {
 // onSubmit or onChange
 export default function SearchBox({ onChange }: SearchBoxProps) {
   const [inputValue, setInputValue] = useState('');
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
-    onChange(inputValue);
+    const value = event.target.value;
+    setInputValue(value);
+    onChange(value);
   };
 
   console.log(inputValue);
