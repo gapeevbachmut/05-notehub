@@ -7,11 +7,15 @@ import {
 import { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { fetchNotes, deleteNote } from '../../services/noteService';
+import { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import css from './App.module.css';
 import NoteList from '../NoteList/NoteList';
 import SearchBox from '../SearchBox/SearchBox';
 import Pagination from '../Pagination/Pagination';
 import Modal from '../Modal/Modal';
+import Loader from '../Loader/Loader';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState(''); // значення інпута
@@ -52,9 +56,11 @@ export default function App() {
   });
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Видалити нотатку?')) {
-      deleteNoteMutation.mutate(id);
-    }
+    deleteNoteMutation.mutate(id);
+    toast.error('Нотатка видалена!');
+    // if (window.confirm('Видалити нотатку?')) {
+    //   deleteNoteMutation.mutate(id);
+    // }
   };
   ///////////////////////////////
 
@@ -64,16 +70,15 @@ export default function App() {
       <div className={css.app}>
         <header className={css.toolbar}>
           <SearchBox onChange={updateSearchQuery} />
-
+          {isLoading && <Loader />}
+          {isError && <ErrorMessage />}
           {isSuccess && data && data.notes.length > 0 ? (
             <Pagination
               pageCount={data.totalPages}
               onPageChange={handlePageChange}
             />
           ) : (
-            !isLoading && (
-              <p>Немає нотаток за пошуковим запитом. Створимо першу нотатку?</p>
-            )
+            !isLoading && <p>Немає нотаток за пошуковим запитом. </p>
           )}
 
           <button className={css.button} onClick={openModal}>
@@ -88,6 +93,7 @@ export default function App() {
         )}
         {isModalOpen && <Modal onClose={closeModal} />}
       </div>
+      <Toaster />
     </>
   );
 }

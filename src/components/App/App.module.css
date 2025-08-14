@@ -13,11 +13,19 @@
     padding: 16px 0;
     background-color: #f8f9fa;
     border-bottom: 1px solid #dee2e6;
+    background-image: url(/src/images/fon_note.jpg);
+    background-size: cover;
+    opacity: 0.7;
+}
+
+.toolbar:hover,
+.toolbar:focus {
+    opacity: 1;
 }
 
 .button {
     padding: 6px 12px;
-    font-size: 16px;
+    font-size: 20px;
     color: #fff;
     background-color: #0d6efd;
     border: none;
@@ -28,4 +36,9 @@
 
 .button:hover {
     background-color: #0b5ed7;
+}
+
+h1 {
+    text-align: center;
+    text-shadow: 2px 2px #0d6efd;
 }
