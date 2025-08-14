@@ -21,8 +21,7 @@ interface NoteFormProps {
   onClose: () => void;
 }
 
-const initialFormValues: Note = {
-  id: '',
+const initialFormValues: CreateNoteType = {
   title: '',
   content: '',
   tag: 'Todo',
@@ -42,7 +41,7 @@ export default function NoteForm({ onClose }: NoteFormProps) {
 
   const handleSubmit = async (
     values: CreateNoteType,
-    formikHelpers: FormikHelpers<Note>
+    formikHelpers: FormikHelpers<CreateNoteType>
   ) => {
     mutation.mutate(values);
     // await new Promise(r => setTimeout(r, 1000));

@@ -44,10 +44,8 @@ export async function deleteNote(id: string): Promise<Note> {
 
 //  додавання
 
-export async function createNote(
-  noteData: CreateNoteType
-): Promise<CreateNoteType> {
-  const responce = await axios.post<CreateNoteType>(`${API_URL}`, noteData, {
+export async function createNote(noteData: CreateNoteType): Promise<Note> {
+  const responce = await axios.post<Note>(`${API_URL}`, noteData, {
     headers: {
       accept: 'application/json',
       Authorization: `Bearer ${myKey}`,
