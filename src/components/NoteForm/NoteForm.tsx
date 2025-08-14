@@ -4,7 +4,7 @@ import { Field, Formik, Form, type FormikHelpers, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createNote } from '../../services/noteService';
-import { type Note, type CreateNoteType } from '../../types/note';
+import { type CreateNoteType } from '../../types/note';
 
 const NoteSchema = Yup.object().shape({
   title: Yup.string()
