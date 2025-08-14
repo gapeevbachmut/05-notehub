@@ -2,6 +2,9 @@ import css from './NoteForm.module.css';
 import { useId } from 'react';
 import { Field, Formik, Form, type FormikHelpers, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createNote } from '../../services/noteService';
+import type { Note } from '../../types/note';
 
 const NoteSchema = Yup.object().shape({
   title: Yup.string()
@@ -9,31 +12,45 @@ const NoteSchema = Yup.object().shape({
     .min(3, 'Мінімум три символи!')
     .max(50, 'ДУУУУУЖЕ довга назва! Давайте зробимо її коротшою!'),
   content: Yup.string().required('Зробіть, будь ласка опис нотатки!').max(500),
-  tag: Yup.string<
-    'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping'
-  >().required('Оберіть категорію!'),
+  tag: Yup.string()
+    .oneOf(['Todo', 'Work', 'Personal', 'Meeting', 'Shopping'])
+    .required('Оберіть категорію!'),
 });
 
 interface NoteFormProps {
   onClose: () => void;
 }
-interface NoteFormValues {
-  title: string;
-  content: string;
-  tag: string;
-}
+// interface NoteFormValues {
+//   title: string;
+//   content: string;
+//   tag: 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
+// }
 
-const initialFormValues: NoteFormValues = { title: '', content: '', tag: '' };
+const initialFormValues: Note = {
+  id: '',
+  title: '',
+  content: '',
+  tag: 'Todo',
+};
 
 export default function NoteForm({ onClose }: NoteFormProps) {
+  const queryClient = useQueryClient();
   const fieldId = useId();
-  const handleSubmit = async (
-    values: NoteFormValues,
-    formikHelpers: FormikHelpers<NoteFormValues>
-  ) => {
-    //  тут зробити запит !!!!!!!!!!!!!!!!
 
-    await new Promise(r => setTimeout(r, 1000));
+  const mutation = useMutation({
+    mutationFn: createNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
+      onClose();
+    },
+  });
+
+  const handleSubmit = async (
+    values: Note,
+    formikHelpers: FormikHelpers<Note>
+  ) => {
+    mutation.mutate(values);
+    // await new Promise(r => setTimeout(r, 1000));
     formikHelpers.resetForm(); //скидання форми
     console.log(values);
   };
@@ -45,8 +62,6 @@ export default function NoteForm({ onClose }: NoteFormProps) {
       onSubmit={handleSubmit}
     >
       {props => {
-        console.log(props.isSubmitting);
-
         return (
           <Form className={css.form}>
             <div className={css.formGroup}>
@@ -55,7 +70,7 @@ export default function NoteForm({ onClose }: NoteFormProps) {
                 id={`${fieldId}-title`}
                 type="text"
                 name="title"
-                placeholder="Введіть назву нотатки."
+                placeholder="Введіть назву нотатки"
                 className={css.input}
               />
               <ErrorMessage
@@ -70,7 +85,7 @@ export default function NoteForm({ onClose }: NoteFormProps) {
               <Field
                 as="textarea"
                 id={`${fieldId}-content`}
-                placeholder="Зробіть опис."
+                placeholder="Зробіть опис"
                 name="content"
                 rows={8}
                 className={css.textarea}
@@ -111,9 +126,11 @@ export default function NoteForm({ onClose }: NoteFormProps) {
               <button
                 type="submit"
                 className={css.submitButton}
-                disabled={false}
+                disabled={mutation.isPending}
               >
                 {props.isSubmitting ? 'Note is creating ...' : 'Create note'}
+                {/*    or          {mutation.isPending ? 'Note is creating ...' : 'Create note'}
+                 */}
               </button>
             </div>
           </Form>

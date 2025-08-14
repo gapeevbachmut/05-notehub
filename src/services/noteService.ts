@@ -1,11 +1,7 @@
-// // fetchNotes : має виконувати запит для отримання колекції нотатків із сервера. Повинна підтримувати пагінацію (через параметр сторінки) та фільтрацію за ключовим словом (пошук);
-// // createNote: має виконувати запит для створення нової нотатки на сервері. Приймає вміст нової нотатки та повертає створену нотатку у відповіді;
-
-///////////////////////////////////////////////////////
 import axios from 'axios';
 import { type Note } from '../types/note';
 
-export interface FetchNotesResponse {
+export interface NotesResponse {
   notes: Note[];
   totalPages: number;
 }
@@ -15,7 +11,7 @@ export const fetchNotes = async (
   search: string,
   page: number,
   perPage: number
-): Promise<FetchNotesResponse> => {
+): Promise<NotesResponse> => {
   const config = {
     params: {
       search, // пошук - ?
@@ -27,7 +23,7 @@ export const fetchNotes = async (
       Authorization: `Bearer ${myKey}`,
     },
   };
-  const responce = await axios.get<FetchNotesResponse>(
+  const responce = await axios.get<NotesResponse>(
     `https://notehub-public.goit.study/api/notes`,
     config
   );
@@ -35,6 +31,8 @@ export const fetchNotes = async (
 
   return responce.data;
 };
+
+//  видалення
 
 export async function deleteNote(id: string): Promise<Note> {
   const responce = await axios.delete<Note>(
@@ -49,12 +47,18 @@ export async function deleteNote(id: string): Promise<Note> {
   return responce.data;
 }
 
-//  ( createNote, )
+//  додавання
 
-// Створення нової нотатки
-
-// Додайте в хедер застосунку кнопку для створення нової нотатки:
-
-// <button className={css.button}>Create note +</button>
-
-// При натисканні на цю кнопку має відкриватись модальне вікно Modal з формою NoteForm.
+export const createNote = async (noteData: Note): Promise<Note> => {
+  const responce = await axios.post<Note>(
+    `https://notehub-public.goit.study/api/notes`,
+    noteData,
+    {
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${myKey}`,
+      },
+    }
+  );
+  return responce.data;
+};
