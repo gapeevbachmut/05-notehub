@@ -1,17 +1,18 @@
 import axios from 'axios';
-import { type Note } from '../types/note';
+import { type Note, type CreateNoteType } from '../types/note';
 
 export interface NotesResponse {
   notes: Note[];
   totalPages: number;
 }
 const myKey = import.meta.env.VITE_NOTEHUB_TOKEN;
+const API_URL = 'https://notehub-public.goit.study/api/notes';
 
-export const fetchNotes = async (
+export async function fetchNotes(
   search: string,
   page: number,
   perPage: number
-): Promise<NotesResponse> => {
+): Promise<NotesResponse> {
   const config = {
     params: {
       search, // пошук - ?
@@ -23,42 +24,34 @@ export const fetchNotes = async (
       Authorization: `Bearer ${myKey}`,
     },
   };
-  const responce = await axios.get<NotesResponse>(
-    `https://notehub-public.goit.study/api/notes`,
-    config
-  );
+  const responce = await axios.get<NotesResponse>(`${API_URL}`, config);
   console.log(responce.data.notes);
 
   return responce.data;
-};
+}
 
 //  видалення
 
 export async function deleteNote(id: string): Promise<Note> {
-  const responce = await axios.delete<Note>(
-    `https://notehub-public.goit.study/api/notes/${id}`,
-    {
-      headers: {
-        accept: 'application/json',
-        Authorization: `Bearer ${myKey}`,
-      },
-    }
-  );
+  const responce = await axios.delete<Note>(`${API_URL}/${id}`, {
+    headers: {
+      accept: 'application/json',
+      Authorization: `Bearer ${myKey}`,
+    },
+  });
   return responce.data;
 }
 
 //  додавання
 
-export const createNote = async (noteData: Note): Promise<Note> => {
-  const responce = await axios.post<Note>(
-    `https://notehub-public.goit.study/api/notes`,
-    noteData,
-    {
-      headers: {
-        accept: 'application/json',
-        Authorization: `Bearer ${myKey}`,
-      },
-    }
-  );
+export async function createNote(
+  noteData: CreateNoteType
+): Promise<CreateNoteType> {
+  const responce = await axios.post<CreateNoteType>(`${API_URL}`, noteData, {
+    headers: {
+      accept: 'application/json',
+      Authorization: `Bearer ${myKey}`,
+    },
+  });
   return responce.data;
-};
+}

@@ -28,14 +28,7 @@ export default function App() {
   }, 500);
 
   // Завантаження при першому рендері
-  const {
-    // data: notes = [],
-    data,
-    isSuccess,
-    isLoading,
-    error,
-    isError,
-  } = useQuery({
+  const { data, isSuccess, isLoading, error, isError } = useQuery({
     queryKey: ['notes', searchQuery, currentPage],
     queryFn: () => fetchNotes(searchQuery, currentPage, perPage),
     placeholderData: keepPreviousData, //  дані відмалюються після запиту

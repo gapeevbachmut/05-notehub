@@ -4,7 +4,7 @@ import { Field, Formik, Form, type FormikHelpers, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createNote } from '../../services/noteService';
-import type { Note } from '../../types/note';
+import { type Note, type CreateNoteType } from '../../types/note';
 
 const NoteSchema = Yup.object().shape({
   title: Yup.string()
@@ -20,11 +20,6 @@ const NoteSchema = Yup.object().shape({
 interface NoteFormProps {
   onClose: () => void;
 }
-// interface NoteFormValues {
-//   title: string;
-//   content: string;
-//   tag: 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
-// }
 
 const initialFormValues: Note = {
   id: '',
@@ -46,7 +41,7 @@ export default function NoteForm({ onClose }: NoteFormProps) {
   });
 
   const handleSubmit = async (
-    values: Note,
+    values: CreateNoteType,
     formikHelpers: FormikHelpers<Note>
   ) => {
     mutation.mutate(values);
@@ -105,7 +100,6 @@ export default function NoteForm({ onClose }: NoteFormProps) {
                 name="tag"
                 className={css.select}
               >
-                <option value="">--Оберіть категорію--</option>
                 <option value="Todo">Todo</option>
                 <option value="Work">Work</option>
                 <option value="Personal">Personal</option>
@@ -129,8 +123,6 @@ export default function NoteForm({ onClose }: NoteFormProps) {
                 disabled={mutation.isPending}
               >
                 {props.isSubmitting ? 'Note is creating ...' : 'Create note'}
-                {/*    or          {mutation.isPending ? 'Note is creating ...' : 'Create note'}
-                 */}
               </button>
             </div>
           </Form>

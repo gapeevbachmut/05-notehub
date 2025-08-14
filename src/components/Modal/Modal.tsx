@@ -5,7 +5,6 @@ import NoteForm from '../NoteForm/NoteForm';
 
 interface ModalProps {
   onClose: () => void;
-  //   children: React.ReactNode;
 }
 
 export default function Modal({ onClose }: ModalProps) {

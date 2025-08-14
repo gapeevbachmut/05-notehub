@@ -17,3 +17,10 @@ export interface Note {
   content: string;
   tag: 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
 }
+
+// для створення - свариться на id  !!!!!!!!!!!!!!!!
+export interface CreateNoteType {
+  title: string;
+  content: string;
+  tag: 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
+}
