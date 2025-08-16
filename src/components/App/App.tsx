@@ -1,14 +1,8 @@
-import {
-  useQuery,
-  keepPreviousData,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { fetchNotes, deleteNote } from '../../services/noteService';
+import { fetchNotes } from '../../services/noteService';
 import { Toaster } from 'react-hot-toast';
-import toast from 'react-hot-toast';
 import css from './App.module.css';
 import NoteList from '../NoteList/NoteList';
 import SearchBox from '../SearchBox/SearchBox';
@@ -16,6 +10,7 @@ import Pagination from '../Pagination/Pagination';
 import Modal from '../Modal/Modal';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
+import NoteForm from '../NoteForm/NoteForm';
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState(''); // значення інпута
@@ -29,6 +24,7 @@ export default function App() {
 
   const updateSearchQuery = useDebouncedCallback((value: string) => {
     setSearchQuery(value);
+    setCurrentPage(1);
   }, 500);
 
   // Завантаження при першому рендері
@@ -36,33 +32,11 @@ export default function App() {
     queryKey: ['notes', searchQuery, currentPage],
     queryFn: () => fetchNotes(searchQuery, currentPage, perPage),
     placeholderData: keepPreviousData, //  дані відмалюються після запиту
-    // enabled: false, // не рендерити одразу
   });
 
   const handlePageChange = ({ selected }: { selected: number }) => {
     setCurrentPage(selected + 1);
   };
-
-  // видалення  нотатки
-
-  const queryClient = useQueryClient();
-
-  const deleteNoteMutation = useMutation({
-    mutationFn: (id: string) => deleteNote(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notes'] }),
-    onError: error => {
-      console.error('Помилка при видаленні нотатки', error.message);
-    },
-  });
-
-  const handleDelete = (id: string) => {
-    deleteNoteMutation.mutate(id);
-    toast.error('Нотатка видалена!');
-    // if (window.confirm('Видалити нотатку?')) {
-    //   deleteNoteMutation.mutate(id);
-    // }
-  };
-  ///////////////////////////////
 
   return (
     <>
@@ -76,6 +50,7 @@ export default function App() {
             <Pagination
               pageCount={data.totalPages}
               onPageChange={handlePageChange}
+              currentPage={currentPage}
             />
           ) : (
             !isLoading && <p>Немає нотаток за пошуковим запитом. </p>
@@ -89,9 +64,13 @@ export default function App() {
         {isError && <p>Помилка: {error.message}</p>}
 
         {isSuccess && data && data.notes.length > 0 && (
-          <NoteList notes={data.notes || []} onDelete={handleDelete} />
+          <NoteList notes={data.notes || []} />
         )}
-        {isModalOpen && <Modal onClose={closeModal} />}
+        {isModalOpen && (
+          <Modal onClose={closeModal}>
+            <NoteForm onClose={closeModal} />
+          </Modal>
+        )}
       </div>
       <Toaster />
     </>

@@ -12,7 +12,7 @@ const NoteSchema = Yup.object().shape({
     .required('Введіть назву нотатки!')
     .min(3, 'Мінімум три символи!')
     .max(50, 'ДУУУУУЖЕ довга назва! Давайте зробимо її коротшою!'),
-  content: Yup.string().required('Зробіть, будь ласка опис нотатки!').max(500),
+  content: Yup.string().max(500),
   tag: Yup.string()
     .oneOf(['Todo', 'Work', 'Personal', 'Meeting', 'Shopping'])
     .required('Оберіть категорію!'),
@@ -46,10 +46,15 @@ export default function NoteForm({ onClose }: NoteFormProps) {
     values: CreateNoteType,
     formikHelpers: FormikHelpers<CreateNoteType>
   ) => {
-    mutation.mutate(values);
-    // await new Promise(r => setTimeout(r, 1000));
-    formikHelpers.resetForm(); //скидання форми
-    console.log(values);
+    try {
+      await mutation.mutateAsync(values);
+      formikHelpers.resetForm(); //скидання форми
+      onClose();
+    } catch {
+      toast.error('Не вдалося створити нотатку!');
+    }
+
+    // console.log(values);
   };
 
   return (
@@ -82,7 +87,7 @@ export default function NoteForm({ onClose }: NoteFormProps) {
               <Field
                 as="textarea"
                 id={`${fieldId}-content`}
-                placeholder="Зробіть опис"
+                placeholder="Зробіть, будь ласка опис нотатки!"
                 name="content"
                 rows={8}
                 className={css.textarea}

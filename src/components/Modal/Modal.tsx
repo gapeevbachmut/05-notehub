@@ -1,13 +1,13 @@
 import css from './Modal.module.css';
 import { createPortal } from 'react-dom';
 import React, { useEffect } from 'react';
-import NoteForm from '../NoteForm/NoteForm';
 
 interface ModalProps {
   onClose: () => void;
+  children: React.ReactNode;
 }
 
-export default function Modal({ onClose }: ModalProps) {
+export default function Modal({ onClose, children }: ModalProps) {
   const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
       onClose();
@@ -37,9 +37,7 @@ export default function Modal({ onClose }: ModalProps) {
       aria-modal="true"
       onClick={handleBackdropClick}
     >
-      <div className={css.modal}>
-        <NoteForm onClose={onClose} />
-      </div>
+      <div className={css.modal}>{children}</div>
     </div>,
     document.body
   );
